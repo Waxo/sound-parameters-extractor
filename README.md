@@ -22,7 +22,7 @@ The package was broken for me so I decided to fix it and provide some new tools.
       * [Spectral roll off point](#spectral-roll-off-point)
       * [Spectral centroid](#spectral-centroid)
       * [Deltas](#deltas)
-      * [modulusFFT](#modulusFFT)
+      * [FFT Modulus](#modulusFFT)
 
 ## Installation
 `npm install --save sound-parameters-extractor`
