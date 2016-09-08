@@ -137,3 +137,18 @@ The delta delta are computed on the acoustic vector (and not the deltas) to mini
 ###### `modulusFFT(frame)`
 Computes the modulus of the FFT for a given frame.
 You may want to delete the first half of the FFT before computing its modulus.
+
+#### Parameters from file
+This is a simple wrapper from file reading to parameters, you can have a look at
+it to see how to get sound parameters.
+Please have a look at [Basic usage](#basic-usage) on how to use it.
+This method returns an object containing :
+ * MFCC (key : `mfcc`)
+ * FFT (key : `fft`)
+ * Zero crossing rate (key : `zcr`)
+ * Spectral Centroid (key : `sc`)
+ * Spectral Roll-Off Point (key : `srf`)
+ 
+ #### Array to Raw
+ Write the given vectors to a binary file (RAW) this can be used by
+ [Alize](http://mistral.univ-avignon.fr/) (e.g. i-vectors).

@@ -1,3 +1,4 @@
+const BluebirdPromise = require('bluebird');
 const fs = require('fs');
 
 /**
@@ -16,7 +17,10 @@ const arrayToRaw = (array, outputName, outputPath = '') => {
   });
   const wStream = fs.createWriteStream(output);
   wStream.write(buff);
-  wStream.end();
+  return new BluebirdPromise(resolve => {
+    wStream.end();
+    resolve();
+  });
 };
 
 module.exports = {arrayToRaw};
