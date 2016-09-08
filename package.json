@@ -1,0 +1,62 @@
+{
+  "name": "sound-parameters-extrator",
+  "version": "0.0.1",
+  "description": "Implementation for calculation of sound parameters",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mfcc",
+    "mel",
+    "scale",
+    "cepstrum",
+    "coefficients",
+    "frequency",
+    "fft",
+    "audio",
+    "sound",
+    "speech",
+    "zcr",
+    "zero",
+    "crossing",
+    "rate",
+    "srf",
+    "spectral",
+    "roll",
+    "off",
+    "rolloff",
+    "point",
+    "sc",
+    "centroid",
+    "delta",
+    "delta-delta"
+  ],
+  "author": "Maxime ROBIN",
+  "license": "MIT",
+  "dependencies": {
+    "dct": "^0.0.3",
+    "bluebird": "^3.4.6",
+    "fft-js": "^0.0.9",
+    "fs-extra": "^0.30.0",
+    "node-wav": "^0.0.2"
+  },
+  "xo": {
+    "esnext": true,
+    "envs": [
+      "browser",
+      "node"
+    ],
+    "space": 2,
+    "ignores": [
+      "testem.js"
+    ],
+    "rules": {
+      "max-len": [
+        "error",
+        80,
+        2
+      ]
+    }
+  }
+}
