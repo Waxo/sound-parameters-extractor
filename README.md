@@ -22,6 +22,7 @@ The package was broken for me so I decided to fix it and provide some new tools.
       * [Spectral roll off point](#spectral-roll-off-point)
       * [Spectral centroid](#spectral-centroid)
       * [Deltas](#deltas)
+      * [modulusFFT](#modulusFFT)
 
 ## Installation
 `npm install --save sound-parameters-extractor`
@@ -132,6 +133,7 @@ Use it on the deltaParameters to have the delta delta.
 Use a taylor decomposition to estimate the first and second derivative.
 The delta delta are computed on the acoustic vector (and not the deltas) to minimize the approximation.
 
-##### `modulusFFT(frame)`
-Computes the modulus of the FFT.
+##### FFT Modulus
+###### `modulusFFT(frame)`
+Computes the modulus of the FFT for a given frame.
 You may want to delete the first half of the FFT before computing its modulus.
