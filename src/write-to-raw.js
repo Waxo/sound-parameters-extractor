@@ -9,7 +9,6 @@ const fs = require('fs');
  */
 const arrayToRaw = (array, outputName, outputPath = '') => {
   const output = (outputPath) ? `${outputPath}${outputName}` : outputName;
-  console.log(array[0].length);
   const arr = new Float32Array(array.reduce((a, b) => a.concat(b)));
   const buff = new Buffer(arr.length * 4);
   arr.forEach((value, idx) => {
