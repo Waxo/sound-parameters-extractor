@@ -1,6 +1,6 @@
 {
   "name": "sound-parameters-extractor",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Calculation of sound parameters",
   "main": "index.js",
   "scripts": {
