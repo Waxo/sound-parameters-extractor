@@ -16,10 +16,8 @@ const arrayToRaw = (array, outputName, outputPath = '') => {
   });
   const wStream = fs.createWriteStream(output);
   wStream.write(buff);
-  return new BluebirdPromise(resolve => {
-    wStream.end();
-    resolve();
-  });
+  wStream.end();
+  return new BluebirdPromise(resolve => resolve());
 };
 
 module.exports = {arrayToRaw};

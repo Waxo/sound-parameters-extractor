@@ -23,6 +23,8 @@ The package was broken for me so I decided to fix it and provide some new tools.
       * [Spectral centroid](#spectral-centroid)
       * [Deltas](#deltas)
       * [FFT Modulus](#fft-modulus)
+    * [Parameters from file](#parameters-from-file)
+    * [Array to raw](#array-to-raw)
 
 ## Installation
 `npm install --save sound-parameters-extractor`
@@ -149,6 +151,6 @@ This method returns an object containing :
  * Spectral Centroid (key : `sc`)
  * Spectral Roll-Off Point (key : `srf`)
  
- #### Array to Raw
- Write the given vectors to a binary file (RAW) this can be used by
- [Alize](http://mistral.univ-avignon.fr/) (e.g. i-vectors).
+#### Array to Raw
+Write the given vectors to a binary file (RAW) this can be used by
+[Alize](http://mistral.univ-avignon.fr/) (e.g. i-vectors).
