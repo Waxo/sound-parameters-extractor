@@ -117,7 +117,7 @@ const construct = (config, numberOfMFCC = 12) => {
 
     const melSpec = filterBank.filter(fft);
     const melSpecLog = melSpec.map(log_);
-    return dct(melSpecLog).slice(0, numberOfMFCC + 1);
+    return dct(melSpecLog).slice(0, numberOfMFCC);
   };
 };
 

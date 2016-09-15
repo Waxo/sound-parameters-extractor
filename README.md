@@ -132,7 +132,7 @@ Implementation of derivative formula from [Practical Cryptography](http://practi
 Use it on the deltaParameters to have the delta delta.
 
 ###### `deltaCustomAllSignal(acousticVectors)` and `deltaDeltaCustomAllSignal(acousticVectors)`
-Use a taylor decomposition to estimate the first and second derivative.
+Use a Taylor decomposition to estimate the first and second derivative.
 The delta delta are computed on the acoustic vector (and not the deltas) to minimize the approximation.
 
 ##### FFT Modulus
