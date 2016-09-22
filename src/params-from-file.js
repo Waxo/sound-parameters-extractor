@@ -8,7 +8,8 @@ const {
   modulusFFT,
   zeroCrossingRateClipping,
   spectralRollOffPoint,
-  spectralCentroid
+  spectralCentroid,
+  spectralCentroidSRF
 } = require('./parameters');
 
 const computeMFCC_ = (signal, config, mfccSize) => {
@@ -21,8 +22,7 @@ const computeMFCC_ = (signal, config, mfccSize) => {
 
 const computeFFT_ = signal => {
   return signal.map(frame => {
-    const fftFrame = fft.fft(frame);
-    return modulusFFT(fftFrame.splice(fftFrame.length / 2, fftFrame.length));
+    return modulusFFT(fft.fft(frame), true);
   });
 };
 
@@ -62,6 +62,8 @@ const getParamsFromFile = (filePath, config, mfccSize, cfgParam = {}) => {
       params.mfcc = computeMFCC_(framedSound, config, mfccSize);
       params.fft = computeFFT_(framedSound);
       params.sc = params.fft.map(frame => spectralCentroid(frame));
+      params.sc2 =
+        params.fft.map(frame => spectralCentroidSRF(frame, config.sampleRate));
       params.srf =
         params.fft.map(
           frame => spectralRollOffPoint(frame, config.sampleRate,

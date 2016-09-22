@@ -76,6 +76,10 @@ const spectralCentroid = frame => {
   return (numerator / denominator);
 };
 
+const spectralCentroidSRF = (frame, sampleRate) => {
+  return spectralRollOffPoint(frame, sampleRate, '50%');
+};
+
 /**
  * Extend the frame with previous and later coefficients
  * @param {Array} frame - The window on which we want to extend
@@ -248,9 +252,13 @@ const deltaDeltaCustomAllSignal = signalAcousticVectors => {
 /**
  * Process the modulus for a frame after the fft
  * @param {Array} frame - after fft calculation (eg: [[0,0],[0.032,0] ... ]
+ * @param {Boolean} removeHalf - remove half of the fft for the modulus
  * @return {Array} modulus for the frame
  */
-const modulusFFT = frame => {
+const modulusFFT = (frame, removeHalf = false) => {
+  if (removeHalf) {
+    frame = frame.splice(frame.length / 2, frame.length);
+  }
   return frame.map(a => Math.sqrt((a[0] * a[0]) + (a[1] * a[1])));
 };
 
@@ -259,6 +267,7 @@ module.exports = {
   zeroCrossingRateClipping,
   spectralRollOffPoint,
   spectralCentroid,
+  spectralCentroidSRF,
   deltaFrame,
   deltaAllSignal,
   deltaCustomVectors,

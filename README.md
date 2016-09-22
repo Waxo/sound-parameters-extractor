@@ -116,14 +116,17 @@ same result but has better performance than the formal one.
 ##### Spectral roll off point
 ###### `spectralRollOffPoint(frame, sampleRate, cutoff, hz = false)`
 Computes the spectral roll-off point on a given frame.
-Is computed on the modulus of the fft (don't forget to delete the first half of the FFT).
-
+Is computed on the modulus of the fft (don't forget to delete the first half of the FFT).  
 If hz is true the return will be in hertz, if not it's the index in the vector.
 
 ##### Spectral centroid
 ###### `spectralCentroid(frame)`
 Computes the spectral centroid on a given frame.
 It's computed on the modulus of the fft (don't forget to delete the first half of the FFT).
+
+###### `spectralCentroidSRF(frame, sampleRate)`
+This method uses the spectral roll off point with a cutoff of 50%,
+this is the equivalent of the spectral centroid, currently the spectral centroid method have some problems with ALIZE
 
 ##### Deltas
 ###### `deltaFrameAllSignal(acousticVectors, overlap)`
@@ -135,10 +138,11 @@ Use it on the deltaParameters to have the delta delta.
 Use a Taylor decomposition to estimate the first and second derivative.
 The delta delta are computed on the acoustic vector (and not the deltas) to minimize the approximation.
 
-##### FFT Modulus
-###### `modulusFFT(frame)`
+##### FFT Modulusnpm 
+###### `modulusFFT(frame, removeHalf)`
 Computes the modulus of the FFT for a given frame.
 You may want to delete the first half of the FFT before computing its modulus.
+If `removeHalf` is true, the second half of the fft will be removed before computing the fft.
 
 #### Parameters from file
 This is a simple wrapper from file reading to parameters, you can have a look at
@@ -149,6 +153,7 @@ This method returns an object containing :
  * FFT (key : `fft`)
  * Zero crossing rate (key : `zcr`)
  * Spectral Centroid (key : `sc`)
+ * Spectral Centroid computed via spectral roll of method (key : `sc2`)
  * Spectral Roll-Off Point (key : `srf`)
  
 #### Array to Raw
