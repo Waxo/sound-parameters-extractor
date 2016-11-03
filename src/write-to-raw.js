@@ -1,5 +1,5 @@
 const BluebirdPromise = require('bluebird');
-const fs = require('fs');
+const fs = BluebirdPromise.promisifyAll(require('fs-extra'));
 
 /**
  * Convert a two dimensional array to RAW file for ALIZE
@@ -14,10 +14,7 @@ const arrayToRaw = (array, outputName, outputPath = '') => {
   arr.forEach((value, idx) => {
     buff.writeFloatLE(value, idx * 4);
   });
-  const wStream = fs.createWriteStream(output);
-  wStream.write(buff);
-  wStream.end();
-  return new BluebirdPromise(resolve => resolve());
+  return fs.writeFileAsync(output, buff, 'binary');
 };
 
 module.exports = {arrayToRaw};
