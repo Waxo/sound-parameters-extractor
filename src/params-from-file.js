@@ -47,20 +47,22 @@ const computeFFT_ = signal => {
  * format : {mfcc, fft, sc, zcr, srf}
  */
 const getParamsFromFile = (filePath, config, mfccSize, cfgParam = {}) => {
-  const params = {};
   cfgParam = {
     overlap: cfgParam.overlap || '50%',
     cutoff: cfgParam.cutoff || '85%'
   };
   return fs.readFileAsync(filePath)
     .then(buffer => {
+      const params = {};
       const decoded = wav.decode(buffer);
-      const arrayDecoded = Array.from(decoded.channelData[0]);
-      const framedSound = framer(arrayDecoded, config.fftSize * 2,
+      params.arrayDecoded = Array.from(decoded.channelData[0]);
+      params.framedSound = framer(params.arrayDecoded, config.fftSize * 2,
         cfgParam.overlap);
-      params.zcr = framedSound.map(frame => zeroCrossingRateClipping(frame));
-      params.mfcc = computeMFCC_(framedSound, config, mfccSize);
-      params.fft = computeFFT_(framedSound);
+
+      params.zcr =
+        params.framedSound.map(frame => zeroCrossingRateClipping(frame));
+      params.mfcc = computeMFCC_(params.framedSound, config, mfccSize);
+      params.fft = computeFFT_(params.framedSound);
       params.sc = params.fft.map(frame => spectralCentroid(frame));
       params.sc2 =
         params.fft.map(frame => spectralCentroidSRF(frame, config.sampleRate));
@@ -68,7 +70,7 @@ const getParamsFromFile = (filePath, config, mfccSize, cfgParam = {}) => {
         params.fft.map(
           frame => spectralRollOffPoint(frame, config.sampleRate,
             cfgParam.cutoff));
-      return new BluebirdPromise(resolve => resolve(params));
+      return params;
     });
 };
 

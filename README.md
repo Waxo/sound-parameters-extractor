@@ -138,7 +138,7 @@ Use it on the deltaParameters to have the delta delta.
 Use a Taylor decomposition to estimate the first and second derivative.
 The delta delta are computed on the acoustic vector (and not the deltas) to minimize the approximation.
 
-##### FFT Modulusnpm 
+##### FFT Modulus
 ###### `modulusFFT(frame, removeHalf)`
 Computes the modulus of the FFT for a given frame.
 You may want to delete the first half of the FFT before computing its modulus.
@@ -149,12 +149,14 @@ This is a simple wrapper from file reading to parameters, you can have a look at
 it to see how to get sound parameters.
 Please have a look at [Basic usage](#basic-usage) on how to use it.
 This method returns an object containing :
- * MFCC (key : `mfcc`)
- * FFT (key : `fft`)
- * Zero crossing rate (key : `zcr`)
- * Spectral Centroid (key : `sc`)
- * Spectral Centroid computed via spectral roll of method (key : `sc2`)
- * Spectral Roll-Off Point (key : `srf`)
+ * The sound extracted by node-wav (key: `arrayDecoded`) ;
+ * The framed sound (key: `framedSound`) ;
+ * MFCC (key : `mfcc`) ;
+ * FFT (key : `fft`) ;
+ * Zero crossing rate (key : `zcr`) ;
+ * Spectral Centroid (key : `sc`) ;
+ * Spectral Centroid computed via spectral roll of method (key : `sc2`) ;
+ * Spectral Roll-Off Point (key : `srf`).
  
 #### Array to Raw
 Write the given vectors to a binary file (RAW) this can be used by
