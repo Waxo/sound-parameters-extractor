@@ -23,6 +23,7 @@ The package was broken for me so I decided to fix it and provide some new tools.
       * [Spectral centroid](#spectral-centroid)
       * [Deltas](#deltas)
       * [FFT Modulus](#fft-modulus)
+      * [Remarkable energy rate](#remarkable-energy-rate)
     * [Parameters from file](#parameters-from-file)
     * [Array to raw](#array-to-raw)
 
@@ -144,6 +145,10 @@ Computes the modulus of the FFT for a given frame.
 You may want to delete the first half of the FFT before computing its modulus.
 If `removeHalf` is true, the second half of the fft will be removed before computing the fft.
 
+##### Remarkable energy rate
+###### `remarkableEnergyRate(arrayDecoded, framedSound)`
+Computed the RER on the signal
+
 #### Parameters from file
 This is a simple wrapper from file reading to parameters, you can have a look at
 it to see how to get sound parameters.
@@ -156,7 +161,8 @@ This method returns an object containing :
  * Zero crossing rate (key : `zcr`) ;
  * Spectral Centroid (key : `sc`) ;
  * Spectral Centroid computed via spectral roll of method (key : `sc2`) ;
- * Spectral Roll-Off Point (key : `srf`).
+ * Spectral Roll-Off Point (key : `srf`) ;
+ * Remarkable energy rate (key : `rer`).
  
 #### Array to Raw
 Write the given vectors to a binary file (RAW) this can be used by

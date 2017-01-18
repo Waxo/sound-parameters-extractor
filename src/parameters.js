@@ -66,7 +66,6 @@ const spectralRollOffPoint = (frame, sampleRate, cutoff, hz = false) => {
  * Computes the Spectral centroid on a given window. This is calculated
  * from the fft
  * @param {Array} frame - The window on which we want to compute the sc
- * @param {Number} sampleRate - sample rate of the file
  * @return {Number} Spectral centroid point for the given window
  */
 const spectralCentroid = frame => {
@@ -262,6 +261,22 @@ const modulusFFT = (frame, removeHalf = false) => {
   return frame.map(a => Math.sqrt((a[0] * a[0]) + (a[1] * a[1])));
 };
 
+/**
+ * Process the RER on the signal
+ * @param {Array} arrayDecoded - The signal without any modification
+ * @param {Array} framedSound - Same signal as array decoded but framed for fft
+ * @return {Array} RER by frame
+ */
+const remarkableEnergyRate = (arrayDecoded, framedSound) => {
+  const maxArray = Math.abs(
+    arrayDecoded.reduce((a, b) => (a > b) ? a : b));
+  const minArray = Math.abs(
+    arrayDecoded.reduce((a, b) => (a < b) ? a : b));
+  const half = Math.min(maxArray, minArray) * 0.5;
+  return framedSound.map(
+    frame => frame.filter(value => Math.abs(value) > half).length);
+};
+
 module.exports = {
   zeroCrossingRate,
   zeroCrossingRateClipping,
@@ -274,5 +289,6 @@ module.exports = {
   deltaDeltaCustomVectors,
   deltaCustomAllSignal,
   deltaDeltaCustomAllSignal,
-  modulusFFT
+  modulusFFT,
+  remarkableEnergyRate
 };

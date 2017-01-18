@@ -9,7 +9,8 @@ const {
   zeroCrossingRateClipping,
   spectralRollOffPoint,
   spectralCentroid,
-  spectralCentroidSRF
+  spectralCentroidSRF,
+  remarkableEnergyRate
 } = require('./parameters');
 
 const computeMFCC_ = (signal, config, mfccSize) => {
@@ -59,6 +60,8 @@ const getParamsFromFile = (filePath, config, mfccSize, cfgParam = {}) => {
       params.framedSound = framer(params.arrayDecoded, config.fftSize * 2,
         cfgParam.overlap);
 
+      params.rer =
+        remarkableEnergyRate(params.arrayDecoded, params.framedSound);
       params.zcr =
         params.framedSound.map(frame => zeroCrossingRateClipping(frame));
       params.mfcc = computeMFCC_(params.framedSound, config, mfccSize);
