@@ -37,7 +37,10 @@ Read the wav file and then write the MFCC in a binary format
 (usable by [Alize](http://mistral.univ-avignon.fr/)) 
 
 ```javascript
-const soundExtractor = require('sound-parameters-extractor');
+const {
+  getParamsFromFile,
+  arrayToRaw
+} = require('sound-parameters-extractor');
 
 const config = {
   fftSize: 32,
@@ -47,10 +50,10 @@ const config = {
   sampleRate: 16000
 };
 
-soundExtractor.getParamsFromFile('sound.wav', config, 16)
+getParamsFromFile('sound.wav', config, 16)
 .then(params => {
   console.log(params);
-  soundExtractor.arrayToRaw(params.mfcc, 'sound.raw');
+  arrayToRaw(params.mfcc, 'sound.raw');
 });
  
 ```
@@ -165,5 +168,9 @@ This method returns an object containing :
  * Remarkable energy rate (key : `rer`).
  
 #### Array to Raw
+###### `arrayToRaw(array, outputName, outputPath = '')`
 Write the given vectors to a binary file (RAW) this can be used by
-[Alize](http://mistral.univ-avignon.fr/) (e.g. i-vectors).
+[Alize](http://mistral.univ-avignon.fr/) (e.g. i-vectors).  
+`array` is two dimensional  
+`outputName` is the name and extension of the file (eg : `'file.raw'`)  
+`outputPath` is optional if not provided file will be write in `process.cwd()` if provided the directories will be created if they are not existing (eg : `./not/existing/yet`) 
