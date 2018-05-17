@@ -113,7 +113,7 @@ Computes the number of times the signal cross 0. Must be computed on the signal.
 ###### `zeroCrossingRate(window)`
 Formal application of the formula.
   
-######`zeroCrossingRateClipping(window, threshold)`
+###### `zeroCrossingRateClipping(window, threshold)`
 Allows you to use a threshold for better noise resistance. This method gives the
 same result but has better performance than the formal one.
 
