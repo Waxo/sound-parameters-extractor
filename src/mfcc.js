@@ -46,19 +46,19 @@ const constructMelFilterBank = (config) => {
     for (let f = 0; f < config.fftSize; f++) {
       if (f > bins[i] + filterRange) {
         // Right, outside of cone
-        filters[i][f] = 0.0;
+        filters[i][f] = 0;
       } else if (f > bins[i]) {
         // Right edge of cone
-        filters[i][f] = 1.0 - (f - bins[i]) / filterRange;
+        filters[i][f] = 1 - (f - bins[i]) / filterRange;
       } else if (f === bins[i]) {
         // Peak of cone
-        filters[i][f] = 1.0;
+        filters[i][f] = 1;
       } else if (f >= bins[i] - filterRange) {
         // Left edge of cone
-        filters[i][f] = 1.0 - (bins[i] - f) / filterRange;
+        filters[i][f] = 1 - (bins[i] - f) / filterRange;
       } else {
         // Left, outside of cone
-        filters[i][f] = 0.0;
+        filters[i][f] = 0;
       }
     }
   }
@@ -72,17 +72,19 @@ const constructMelFilterBank = (config) => {
     deltaMel: deltaM,
     lowFreq: config.lowFrequency,
     highFreq: config.highFrequency,
-    filter: (freqPowers) => {
-      const ret = [];
+    filter(freqPowers) {
+      const returnValue = [];
 
-      filters.forEach((filter, fIx) => {
+      for (const [fIx, filter] of filters.entries()) {
         let tot = 0;
-        freqPowers.forEach((fp, pIx) => {
+        for (const [pIx, fp] of freqPowers.entries()) {
           tot += fp * filter[pIx];
-        });
-        ret[fIx] = tot;
-      });
-      return ret;
+        }
+
+        returnValue[fIx] = tot;
+      }
+
+      return returnValue;
     }
   };
 };

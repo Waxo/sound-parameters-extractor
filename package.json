@@ -1,12 +1,14 @@
 {
   "name": "sound-parameters-extractor",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Calculation of sound parameters",
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "code-style": "xo",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "pre-commit": ["code-style"],
   "keywords": [
     "mfcc",
     "mel",
@@ -41,6 +43,10 @@
     "fs-extra": "^10.0.1",
     "node-wav": "^0.0.2"
   },
+  "devDependencies": {
+    "pre-commit": "^1.2.2",
+    "xo": "^0.48.0"
+  },
   "xo": {
     "space": 2,
     "prettier": true,
@@ -58,8 +64,5 @@
     "bracketSpacing": false,
     "singleQuote": true,
     "trailingComma": "none"
-  },
-  "devDependencies": {
-    "xo": "^0.48.0"
   }
 }

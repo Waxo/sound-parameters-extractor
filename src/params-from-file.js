@@ -2,8 +2,8 @@ import fft from 'fft-js';
 import fs from 'fs-extra';
 import wav from 'node-wav';
 
-import mfcc from './mfcc';
-import {framer} from './framer';
+import mfcc from './mfcc.js';
+import {framer} from './framer.js';
 import {
   modulusFFT,
   zeroCrossingRateClipping,
@@ -11,7 +11,7 @@ import {
   spectralCentroid,
   spectralCentroidSRF,
   remarkableEnergyRate
-} from './parameters';
+} from './parameters.js';
 
 const computeMFCC_ = (signal, config, mfccSize) => {
   const mfccCust = mfcc.construct(config, mfccSize);
@@ -44,36 +44,44 @@ const computeFFT_ = (signal) =>
  * @return {Promise} - The promise send in then an object with the parameter
  * format : {mfcc, fft, sc, zcr, srf}
  */
-const getParamsFromFile = (filePath, config, mfccSize, cfgParam = {}) => {
-  cfgParam = {
-    overlap: cfgParam.overlap || '50%',
-    cutoff: cfgParam.cutoff || '85%'
+const getParametersFromFile = (
+  filePath,
+  config,
+  mfccSize,
+  cfgParameter = {}
+) => {
+  cfgParameter = {
+    overlap: cfgParameter.overlap || '50%',
+    cutoff: cfgParameter.cutoff || '85%'
   };
   return fs.readFile(filePath).then((buffer) => {
-    const params = {};
+    const parameters = {};
     const decoded = wav.decode(buffer);
-    params.arrayDecoded = Array.from(decoded.channelData[0]);
-    params.framedSound = framer(
-      params.arrayDecoded,
+    parameters.arrayDecoded = Array.from(decoded.channelData[0]);
+    parameters.framedSound = framer(
+      parameters.arrayDecoded,
       config.fftSize * 2,
-      cfgParam.overlap
+      cfgParameter.overlap
     );
 
-    params.rer = remarkableEnergyRate(params.arrayDecoded, params.framedSound);
-    params.zcr = params.framedSound.map((frame) =>
+    parameters.rer = remarkableEnergyRate(
+      parameters.arrayDecoded,
+      parameters.framedSound
+    );
+    parameters.zcr = parameters.framedSound.map((frame) =>
       zeroCrossingRateClipping(frame)
     );
-    params.mfcc = computeMFCC_(params.framedSound, config, mfccSize);
-    params.fft = computeFFT_(params.framedSound);
-    params.sc = params.fft.map((frame) => spectralCentroid(frame));
-    params.sc2 = params.fft.map((frame) =>
+    parameters.mfcc = computeMFCC_(parameters.framedSound, config, mfccSize);
+    parameters.fft = computeFFT_(parameters.framedSound);
+    parameters.sc = parameters.fft.map((frame) => spectralCentroid(frame));
+    parameters.sc2 = parameters.fft.map((frame) =>
       spectralCentroidSRF(frame, config.sampleRate)
     );
-    params.srf = params.fft.map((frame) =>
-      spectralRollOffPoint(frame, config.sampleRate, cfgParam.cutoff)
+    parameters.srf = parameters.fft.map((frame) =>
+      spectralRollOffPoint(frame, config.sampleRate, cfgParameter.cutoff)
     );
-    return params;
+    return parameters;
   });
 };
 
-export {getParamsFromFile};
+export {getParametersFromFile as getParamsFromFile};

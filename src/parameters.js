@@ -1,4 +1,4 @@
-import {retrievePercent_} from './private-tools';
+import {retrievePercent_} from './private-tools.js';
 
 /**
  * Computes the zero crossing rate on a given window.
@@ -20,6 +20,7 @@ const zeroCrossingRate = (window) => {
       zcr++;
     }
   }
+
   return zcr;
 };
 
@@ -40,6 +41,7 @@ const zeroCrossingRateClipping = (window, threshold = 0) => {
       zcr++;
     }
   }
+
   return zcr;
 };
 
@@ -63,6 +65,7 @@ const spectralRollOffPoint = (frame, sampleRate, cutoff, hz = false) => {
   while (spectralEnergy < cutoff * totalEnergy) {
     spectralEnergy += frame[i++];
   }
+
   return hz ? (sampleRate / (2 * frame.length)) * i : i;
 };
 
@@ -95,17 +98,13 @@ const spectralCentroidSRF = (frame, sampleRate) => {
  */
 const extendFrame_ = (frame, overlap, frameBefore, frameAfter) => {
   const overlapSize = frame.length / retrievePercent_(overlap);
-  if (frameBefore) {
-    frameBefore = frameBefore.slice(0, overlapSize);
-  } else {
-    frameBefore = new Array(overlapSize).fill(0);
-  }
+  frameBefore = frameBefore
+    ? frameBefore.slice(0, overlapSize)
+    : Array.from({length: overlapSize}, () => 0);
 
-  if (frameAfter) {
-    frameAfter = frameAfter.slice(overlapSize, frameAfter.length);
-  } else {
-    frameAfter = new Array(overlapSize).fill(0);
-  }
+  frameAfter = frameAfter
+    ? frameAfter.slice(overlapSize, frameAfter.length)
+    : Array.from({length: overlapSize}, () => 0);
 
   return {
     frameExtended: frameBefore.concat(frame, frameAfter),
@@ -139,8 +138,10 @@ const deltaFrame = (frame, overlap, frameBefore, frameAfter) => {
       numerator += i * (frameExtended[index + i] - frameExtended[index - i]);
       denominator += i * i;
     }
+
     delta[index - offset] = numerator / (2 * denominator);
   }
+
   return delta;
 };
 
@@ -160,6 +161,7 @@ const deltaAllSignal = (signal, overlap) => {
       i === signal.length - 1 ? null : signal[i + 1]
     );
   }
+
   return signalDelta;
 };
 
@@ -177,10 +179,11 @@ const deltaCustomVectors = (acousticVectors, lengthOfVectors) => {
   const delta = [];
   for (let i = 1; i <= numberOfVectors; i++) {
     if (!acousticVectors[`a${i}`]) {
-      acousticVectors[`a${i}`] = new Array(lengthOfVectors).fill(0);
+      acousticVectors[`a${i}`] = Array.from({length: lengthOfVectors}, () => 0);
     }
+
     if (!acousticVectors[`b${i}`]) {
-      acousticVectors[`b${i}`] = new Array(lengthOfVectors).fill(0);
+      acousticVectors[`b${i}`] = Array.from({length: lengthOfVectors}, () => 0);
     }
   }
 
@@ -190,6 +193,7 @@ const deltaCustomVectors = (acousticVectors, lengthOfVectors) => {
         8 * (acousticVectors.a1[i] - acousticVectors.b1[i])) /
       12;
   }
+
   return delta;
 };
 
@@ -209,10 +213,11 @@ const deltaDeltaCustomVectors = (acousticVectors, lengthOfVectors) => {
   const numberOfVectors = 2;
   for (let i = 1; i <= numberOfVectors; i++) {
     if (!acousticVectors[`a${i}`]) {
-      acousticVectors[`a${i}`] = new Array(lengthOfVectors).fill(0);
+      acousticVectors[`a${i}`] = Array.from({length: lengthOfVectors}, () => 0);
     }
+
     if (!acousticVectors[`b${i}`]) {
-      acousticVectors[`b${i}`] = new Array(lengthOfVectors).fill(0);
+      acousticVectors[`b${i}`] = Array.from({length: lengthOfVectors}, () => 0);
     }
   }
 
@@ -226,6 +231,7 @@ const deltaDeltaCustomVectors = (acousticVectors, lengthOfVectors) => {
         acousticVectors.a2[i]
       ) / 12;
   }
+
   return deltaDelta;
 };
 
@@ -243,6 +249,7 @@ const deltaCustomAllSignal = (signalAcousticVectors) => {
       acousticVectors[`a${i}`] = signalAcousticVectors[index + i];
       acousticVectors[`b${i}`] = signalAcousticVectors[index - i];
     }
+
     return deltaCustomVectors(acousticVectors, lengthOfVectors);
   });
 };
@@ -261,6 +268,7 @@ const deltaDeltaCustomAllSignal = (signalAcousticVectors) => {
       acousticVectors[`a${i}`] = signalAcousticVectors[index + i];
       acousticVectors[`b${i}`] = signalAcousticVectors[index - i];
     }
+
     acousticVectors.c = signalAcousticVectors[index];
     return deltaDeltaCustomVectors(acousticVectors, lengthOfVectors);
   });
@@ -276,6 +284,7 @@ const modulusFFT = (frame, removeHalf = false) => {
   if (removeHalf) {
     frame = frame.splice(frame.length / 2, frame.length);
   }
+
   return frame.map((a) => Math.sqrt(a[0] * a[0] + a[1] * a[1]));
 };
 
@@ -286,8 +295,17 @@ const modulusFFT = (frame, removeHalf = false) => {
  * @return {Array} RER by frame
  */
 const remarkableEnergyRate = (arrayDecoded, framedSound) => {
-  const maxArray = Math.abs(arrayDecoded.reduce((a, b) => (a > b ? a : b)));
-  const minArray = Math.abs(arrayDecoded.reduce((a, b) => (a < b ? a : b)));
+  let maxArray = Number.NEGATIVE_INFINITY;
+  let minArray = Number.POSITIVE_INFINITY;
+
+  for (const element of arrayDecoded) {
+    maxArray = Math.max(maxArray, element);
+    minArray = Math.min(maxArray, element);
+  }
+
+  maxArray = Math.abs(maxArray);
+  minArray = Math.abs(minArray);
+
   const half = Math.min(maxArray, minArray) * 0.5;
   return framedSound.map(
     (frame) => frame.filter((value) => Math.abs(value) > half).length
