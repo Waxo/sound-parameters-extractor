@@ -4,11 +4,9 @@
  * @return {number}
  * @private
  */
-const retrievePercent_ = percentage => {
+const retrievePercent_ = (percentage) => {
   percentage = Number(percentage.replace('%', ''));
   return 100 / percentage;
 };
 
-module.exports = {
-  retrievePercent_
-};
+export {retrievePercent_};

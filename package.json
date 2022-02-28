@@ -1,8 +1,9 @@
 {
   "name": "sound-parameters-extractor",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "Calculation of sound parameters",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,32 +33,33 @@
     "delta",
     "delta-delta"
   ],
-  "author": "Maxime ROBIN",
   "license": "MIT",
   "repository": "waxo/sound-parameters-extractor",
   "dependencies": {
-    "bluebird": "^3.4.6",
-    "dct": "^0.0.3",
-    "fft-js": "^0.0.11",
-    "fs-extra": "^2.0.0",
+    "dct": "^0.1.0",
+    "fft-js": "^0.0.12",
+    "fs-extra": "^10.0.1",
     "node-wav": "^0.0.2"
   },
   "xo": {
-    "esnext": true,
-    "envs": [
-      "browser",
-      "node"
-    ],
     "space": 2,
-    "ignores": [
-      "testem.js"
-    ],
+    "prettier": true,
     "rules": {
-      "max-len": [
-        "error",
-        80,
-        2
-      ]
-    }
+      "unicorn/no-fn-reference-in-iterator": 0,
+      "unicorn/no-array-callback-reference": 0,
+      "unicorn/no-array-method-this-argument": 0,
+      "unicorn/no-reduce": 0
+    },
+    "envs": [
+      "mocha"
+    ]
+  },
+  "prettier": {
+    "bracketSpacing": false,
+    "singleQuote": true,
+    "trailingComma": "none"
+  },
+  "devDependencies": {
+    "xo": "^0.48.0"
   }
 }

@@ -1,4 +1,4 @@
-const retrievePercent_ = require('./private-tools').retrievePercent_;
+import {retrievePercent_} from './private-tools';
 
 /**
  * Computes the zero crossing rate on a given window.
@@ -8,11 +8,15 @@ const retrievePercent_ = require('./private-tools').retrievePercent_;
  * @param {Array} window - The window on which we want to compute the zcr
  * @return {Number} Zero crossing rate for the given window
  */
-const zeroCrossingRate = window => {
+const zeroCrossingRate = (window) => {
   let zcr = 0;
   for (let i = 1; i < window.length; i++) {
-    if (Math.abs(Math.sign((window[i]) ? window[i] : 1) -
-        Math.sign((window[i - 1]) ? window[i - 1] : 1)) > 0) {
+    if (
+      Math.abs(
+        Math.sign(window[i] ? window[i] : 1) -
+          Math.sign(window[i - 1] ? window[i - 1] : 1)
+      ) > 0
+    ) {
       zcr++;
     }
   }
@@ -39,7 +43,7 @@ const zeroCrossingRateClipping = (window, threshold = 0) => {
   return zcr;
 };
 
-const retrieveCutoff_ = percentage => percentage.replace('%', '') / 100;
+const retrieveCutoff_ = (percentage) => percentage.replace('%', '') / 100;
 
 /**
  * Computes the Spectral roll-off point on a given frame
@@ -59,7 +63,7 @@ const spectralRollOffPoint = (frame, sampleRate, cutoff, hz = false) => {
   while (spectralEnergy < cutoff * totalEnergy) {
     spectralEnergy += frame[i++];
   }
-  return (hz) ? sampleRate / (2 * frame.length) * i : i;
+  return hz ? (sampleRate / (2 * frame.length)) * i : i;
 };
 
 /**
@@ -68,11 +72,11 @@ const spectralRollOffPoint = (frame, sampleRate, cutoff, hz = false) => {
  * @param {Array} frame - The window on which we want to compute the sc
  * @return {Number} Spectral centroid point for the given window
  */
-const spectralCentroid = frame => {
+const spectralCentroid = (frame) => {
   const numerator = frame.map((a, index) => a * index).reduce((a, b) => a + b);
   const denominator = frame.reduce((a, b) => a + b);
 
-  return (numerator / denominator);
+  return numerator / denominator;
 };
 
 const spectralCentroidSRF = (frame, sampleRate) => {
@@ -122,8 +126,12 @@ const extendFrame_ = (frame, overlap, frameBefore, frameAfter) => {
 const deltaFrame = (frame, overlap, frameBefore, frameAfter) => {
   const delta = [];
 
-  const {frameExtended, offset} = extendFrame_(frame, overlap, frameBefore,
-    frameAfter);
+  const {frameExtended, offset} = extendFrame_(
+    frame,
+    overlap,
+    frameBefore,
+    frameAfter
+  );
   for (let index = offset; index < frameExtended.length - offset; index++) {
     let numerator = 0;
     let denominator = 0;
@@ -145,9 +153,12 @@ const deltaFrame = (frame, overlap, frameBefore, frameAfter) => {
 const deltaAllSignal = (signal, overlap) => {
   const signalDelta = [];
   for (let i = 0; i < signal.length; i++) {
-    signalDelta[i] =
-      deltaFrame(signal[i], overlap, (i === 0) ? null : signal[i - 1],
-        (i === signal.length - 1) ? null : signal[i + 1]);
+    signalDelta[i] = deltaFrame(
+      signal[i],
+      overlap,
+      i === 0 ? null : signal[i - 1],
+      i === signal.length - 1 ? null : signal[i + 1]
+    );
   }
   return signalDelta;
 };
@@ -174,8 +185,10 @@ const deltaCustomVectors = (acousticVectors, lengthOfVectors) => {
   }
 
   for (let i = 0; i < lengthOfVectors; i++) {
-    delta[i] = (-(acousticVectors.a2[i] - acousticVectors.b2[i]) +
-      (8 * (acousticVectors.a1[i] - acousticVectors.b1[i]))) / 12;
+    delta[i] =
+      (-(acousticVectors.a2[i] - acousticVectors.b2[i]) +
+        8 * (acousticVectors.a1[i] - acousticVectors.b1[i])) /
+      12;
   }
   return delta;
 };
@@ -204,9 +217,14 @@ const deltaDeltaCustomVectors = (acousticVectors, lengthOfVectors) => {
   }
 
   for (let i = 0; i < lengthOfVectors; i++) {
-    deltaDelta[i] = (-(acousticVectors.b2[i] - (16 * acousticVectors.b1[i]) +
-      (30 * acousticVectors.c[i]) - (16 * acousticVectors.a1[i]) +
-      acousticVectors.a2[i])) / 12;
+    deltaDelta[i] =
+      -(
+        acousticVectors.b2[i] -
+        16 * acousticVectors.b1[i] +
+        30 * acousticVectors.c[i] -
+        16 * acousticVectors.a1[i] +
+        acousticVectors.a2[i]
+      ) / 12;
   }
   return deltaDelta;
 };
@@ -216,7 +234,7 @@ const deltaDeltaCustomVectors = (acousticVectors, lengthOfVectors) => {
  * @param {Array} signalAcousticVectors - Audio signal splited by frames
  * @return {Array} Deltas of the signal
  */
-const deltaCustomAllSignal = signalAcousticVectors => {
+const deltaCustomAllSignal = (signalAcousticVectors) => {
   return signalAcousticVectors.map((frame, index) => {
     const lengthOfVectors = frame.length;
     const acousticVectors = {};
@@ -235,7 +253,7 @@ const deltaCustomAllSignal = signalAcousticVectors => {
  * NOT THE DELTA
  * @return {Array} Deltas of the signal
  */
-const deltaDeltaCustomAllSignal = signalAcousticVectors => {
+const deltaDeltaCustomAllSignal = (signalAcousticVectors) => {
   return signalAcousticVectors.map((frame, index) => {
     const lengthOfVectors = frame.length;
     const acousticVectors = {};
@@ -258,7 +276,7 @@ const modulusFFT = (frame, removeHalf = false) => {
   if (removeHalf) {
     frame = frame.splice(frame.length / 2, frame.length);
   }
-  return frame.map(a => Math.sqrt((a[0] * a[0]) + (a[1] * a[1])));
+  return frame.map((a) => Math.sqrt(a[0] * a[0] + a[1] * a[1]));
 };
 
 /**
@@ -268,16 +286,15 @@ const modulusFFT = (frame, removeHalf = false) => {
  * @return {Array} RER by frame
  */
 const remarkableEnergyRate = (arrayDecoded, framedSound) => {
-  const maxArray = Math.abs(
-    arrayDecoded.reduce((a, b) => (a > b) ? a : b));
-  const minArray = Math.abs(
-    arrayDecoded.reduce((a, b) => (a < b) ? a : b));
+  const maxArray = Math.abs(arrayDecoded.reduce((a, b) => (a > b ? a : b)));
+  const minArray = Math.abs(arrayDecoded.reduce((a, b) => (a < b ? a : b)));
   const half = Math.min(maxArray, minArray) * 0.5;
   return framedSound.map(
-    frame => frame.filter(value => Math.abs(value) > half).length);
+    (frame) => frame.filter((value) => Math.abs(value) > half).length
+  );
 };
 
-module.exports = {
+export {
   zeroCrossingRate,
   zeroCrossingRateClipping,
   spectralRollOffPoint,

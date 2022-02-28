@@ -1,31 +1,28 @@
-const BluebirdPromise = require('bluebird');
-const fft = require('fft-js');
-const fs = BluebirdPromise.promisifyAll(require('fs-extra'));
-const wav = require('node-wav');
-const mfcc = require('./mfcc');
-const {framer} = require('./framer');
-const {
+import fft from 'fft-js';
+import fs from 'fs-extra';
+import wav from 'node-wav';
+
+import mfcc from './mfcc';
+import {framer} from './framer';
+import {
   modulusFFT,
   zeroCrossingRateClipping,
   spectralRollOffPoint,
   spectralCentroid,
   spectralCentroidSRF,
   remarkableEnergyRate
-} = require('./parameters');
+} from './parameters';
 
 const computeMFCC_ = (signal, config, mfccSize) => {
   const mfccCust = mfcc.construct(config, mfccSize);
-  return signal.map(frame => {
+  return signal.map((frame) => {
     const phasors = fft.fft(frame);
     return mfccCust(fft.util.fftMag(phasors));
   });
 };
 
-const computeFFT_ = signal => {
-  return signal.map(frame => {
-    return modulusFFT(fft.fft(frame), true);
-  });
-};
+const computeFFT_ = (signal) =>
+  signal.map((frame) => modulusFFT(fft.fft(frame), true));
 
 /**
  * Read file and return an object with MFCC and FFT
@@ -52,29 +49,31 @@ const getParamsFromFile = (filePath, config, mfccSize, cfgParam = {}) => {
     overlap: cfgParam.overlap || '50%',
     cutoff: cfgParam.cutoff || '85%'
   };
-  return fs.readFileAsync(filePath)
-    .then(buffer => {
-      const params = {};
-      const decoded = wav.decode(buffer);
-      params.arrayDecoded = Array.from(decoded.channelData[0]);
-      params.framedSound = framer(params.arrayDecoded, config.fftSize * 2,
-        cfgParam.overlap);
+  return fs.readFile(filePath).then((buffer) => {
+    const params = {};
+    const decoded = wav.decode(buffer);
+    params.arrayDecoded = Array.from(decoded.channelData[0]);
+    params.framedSound = framer(
+      params.arrayDecoded,
+      config.fftSize * 2,
+      cfgParam.overlap
+    );
 
-      params.rer =
-        remarkableEnergyRate(params.arrayDecoded, params.framedSound);
-      params.zcr =
-        params.framedSound.map(frame => zeroCrossingRateClipping(frame));
-      params.mfcc = computeMFCC_(params.framedSound, config, mfccSize);
-      params.fft = computeFFT_(params.framedSound);
-      params.sc = params.fft.map(frame => spectralCentroid(frame));
-      params.sc2 =
-        params.fft.map(frame => spectralCentroidSRF(frame, config.sampleRate));
-      params.srf =
-        params.fft.map(
-          frame => spectralRollOffPoint(frame, config.sampleRate,
-            cfgParam.cutoff));
-      return params;
-    });
+    params.rer = remarkableEnergyRate(params.arrayDecoded, params.framedSound);
+    params.zcr = params.framedSound.map((frame) =>
+      zeroCrossingRateClipping(frame)
+    );
+    params.mfcc = computeMFCC_(params.framedSound, config, mfccSize);
+    params.fft = computeFFT_(params.framedSound);
+    params.sc = params.fft.map((frame) => spectralCentroid(frame));
+    params.sc2 = params.fft.map((frame) =>
+      spectralCentroidSRF(frame, config.sampleRate)
+    );
+    params.srf = params.fft.map((frame) =>
+      spectralRollOffPoint(frame, config.sampleRate, cfgParam.cutoff)
+    );
+    return params;
+  });
 };
 
-module.exports = {getParamsFromFile};
+export {getParamsFromFile};

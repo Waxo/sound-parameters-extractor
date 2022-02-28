@@ -1,4 +1,4 @@
-const retrievePercent_ = require('./private-tools').retrievePercent_;
+import {retrievePercent_} from './private-tools';
 
 /**
  * Divide the signal in the right amount on window according to the size.
@@ -15,7 +15,7 @@ const framer = (signal, windowSize, overlap) => {
   for (let i = 0; i < signal.length; i += overlapSize) {
     framedArray.push(signal.slice(i, i + windowSize));
   }
-  framedArray.map(a => {
+  framedArray.map((a) => {
     while (a.length < windowSize) {
       a.push(0);
     }
@@ -24,4 +24,4 @@ const framer = (signal, windowSize, overlap) => {
   return framedArray;
 };
 
-module.exports = {framer};
+export {framer};
