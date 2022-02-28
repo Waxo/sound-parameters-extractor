@@ -312,7 +312,7 @@ const remarkableEnergyRate = (arrayDecoded, framedSound) => {
   );
 };
 
-const parameters = {
+export {
   zeroCrossingRate,
   zeroCrossingRateClipping,
   spectralRollOffPoint,
@@ -327,5 +327,3 @@ const parameters = {
   modulusFFT,
   remarkableEnergyRate
 };
-
-export {parameters};

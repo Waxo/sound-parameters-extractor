@@ -142,12 +142,4 @@ const construct = (config, numberOfMFCC = 12) => {
 const powerSpectrum = (amplitudes) =>
   amplitudes.map((a) => (a * a) / amplitudes.length);
 
-const mfcc = {
-  powerSpectrum,
-  hzToMels,
-  melsToHz,
-  constructMelFilterBank,
-  construct
-};
-
-export {mfcc};
+export {powerSpectrum, hzToMels, melsToHz, constructMelFilterBank, construct};

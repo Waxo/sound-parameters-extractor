@@ -2,7 +2,7 @@ import fft from 'fft-js';
 import fs from 'fs-extra';
 import wav from 'node-wav';
 
-import mfcc from './mfcc.js';
+import * as mfcc from './mfcc.js';
 import {framer} from './framer.js';
 import {
   modulusFFT,
@@ -38,7 +38,7 @@ const computeFFT_ = (signal) =>
  * };
  * @param {Number} mfccSize - size of the MFCC you want as output
  * must be < fftSize
- * @param {Object} cfgParam -{overlap, cuttoff}
+ * @param {Object} cfgParameter -{overlap, cuttoff}
  * Overlap % between two successive windows (default = 50%)
  * cutoff % for spectralRollOffPoint (default = 85%)
  * @return {Promise} - The promise send in then an object with the parameter
@@ -84,4 +84,4 @@ const getParametersFromFile = (
   });
 };
 
-export {getParametersFromFile as getParamsFromFile};
+export {getParametersFromFile};
